@@ -31,6 +31,35 @@ module.exports = class Transaction {
    * within that transaction ID, and the public key that matches the
    * hash of the public key from a previous output.  It is in the form:
    *  {txID, outputIndex, pubKey, sig}
+   *
+   *
+   *
+   *
+   *  addr = pubKey.Hash
+   *
+   *  Old Tx(transaction) ID: 439fe
+   *  (no inputs - coinbase)
+   *  outputs
+   *  {
+   *      amount: 20,
+   *      addr: b0893
+   *  }
+   *
+   *  The amount from old and the total of the next transaction doesn't match.
+   *  Need input to adjust
+   *
+   *  Transaction ID: face7
+   *  inputs            outputs
+   *  {                 {
+   *   txID: 439fe,       amount: 10,
+   *   outpudIndex: 0,    addr: ae739
+   *   pubKey: ...,     }
+   *   sig: .....       {
+   *  }                    amount: 5,
+   *                       addr: 08f72
+   *                    }
+   *
+   *
    * 
    * @constructor
    * @param {Object} obj - The inputs and outputs of the transaction.
