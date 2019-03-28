@@ -134,6 +134,33 @@ module.exports = class Transaction {
     // 4) From here, you can gather the amount of **input** available to
     //      this transaction.
 
+
+    let input_sum = 0;
+    let output_sum = 0;
+
+    for(let input of this.inputs) {
+      let utxo = utxos[input.txID];
+
+      if(utxo[input.outputIndex]) {
+        // verify hash
+        if (utxo[input.outputIndex]['address'] !== utils.calcAddress(input.pubKey))
+          return false;
+
+        // verify signature
+        if (!utils.verifySignature(input.pubKey, utxo[input.outputIndex], input.sig))
+          return false;
+
+        input_sum += utxo[input.outputIndex].amount;
+      }
+      else
+        return false;
+    }
+
+    for(let output of this.outputs)
+      output_sum += output.amount;
+
+
+    return input_sum >= output_sum;
   }
 
   /**

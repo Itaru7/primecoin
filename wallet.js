@@ -2,7 +2,7 @@
 
 const keypair = require('keypair');
 
-const utils = require('./utils.js')
+const utils = require('./utils.js');
 
 /**
  * A wallet is a collection of "coins", where a coin is defined as
@@ -11,7 +11,7 @@ const utils = require('./utils.js')
  * 
  * In order to spend the coins, we also hold the public/private keys
  * associated with each coin.
- * 
+ *
  * For simplicity, we use a JBOK ("just a bag of keys") wallet.
  */
 module.exports = class Wallet {
@@ -98,12 +98,27 @@ module.exports = class Wallet {
     //
     // Return an object containing the array of inputs and the
     // amount of change needed.
+    let collectedAmount = 0;
+    let change = 0;
+    let required_checks = [];
 
+    while(this.coins.length > 0 && collectedAmount < amount){
+      collectedAmount += this.coins[0].output.amount;
+      let spending_coin = this.coins[0];
+      spending_coin['pubKey'] = this.addresses[spending_coin.output.address].public;
+      spending_coin['sig'] = utils.sign(this.addresses[spending_coin.output.address].private, spending_coin.output);
+      required_checks.push(spending_coin);
 
-    // Currently returning default values.
+      // calculate the amount of change
+      if(collectedAmount > amount)
+        change = collectedAmount - amount;
+
+      this.coins.shift();
+    }
+
     return {
-      inputs: [],
-      changeAmt: 0,
+      inputs: required_checks,
+      changeAmt: change
     };
 
   }
@@ -131,4 +146,4 @@ module.exports = class Wallet {
   hasKey(address) {
     return !!this.addresses[address];
   }
-}
+};

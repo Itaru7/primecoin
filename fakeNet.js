@@ -12,5 +12,5 @@ exports.broadcast = function(msg, o) {
   clients.forEach((client) => {
     client.emit(msg, o);
   });
-}
+};
 
