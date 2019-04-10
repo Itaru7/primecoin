@@ -186,4 +186,4 @@ module.exports = class Transaction {
       (acc, {amount}) => acc + amount,
       0);
   }
-}
+};
