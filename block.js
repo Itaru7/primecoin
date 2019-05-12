@@ -131,7 +131,48 @@ module.exports = class Block {
     verifyProof() {
         let h = utils.hash(this.serialize());
         let n = new BigInteger(h, 16);
-        return n.compareTo(this.target) < 0;
+        //return n.compareTo(this.target) < 0;
+
+        let cunningham_chain = [2, 3, 5]; // just for testing
+        for(let p of cunningham_chain) {
+            for (let i = 0; i < 5; i++) {
+                let a = this.getRandomInt(2, this.proof - 1);
+                if (this.getGCD(a, p) !== 1) {
+                    return false;
+                } else {
+                    if (this.getPower(a, p, p) !== 1) {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
+    getGCD(a,b) { /* getting the greatest common divisor */
+        var tmp;
+        while (b !== 0) {
+            tmp = b;
+            b = a%b;
+            a = tmp;
+        }
+        return a;
+    }
+
+    getPower(a,b,p) { /* getting the a^b mod p */
+        if (b === 1)
+            return a%p;
+        else {
+            let x = this.getPower(a,Math.floor(b/2),p);
+            if (b%2 === 0)
+                return (x*x)%p;
+            else return (((x*x)%p)*a)%p;
+        }
+    }
+
+    getRandomInt(min,max) { /* getting a random between given max and min values */
+        min = Math.ceil(min);
+        max = Math.ceil(max);
+        return Math.floor(Math.random()*(max-min))+min;
     }
 
     /**
