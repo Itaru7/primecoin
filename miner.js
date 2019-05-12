@@ -73,6 +73,15 @@ module.exports = class Miner extends Client {
     this.currentBlock.proof = 0;
   }
 
+  cunninghamChain(block, numMulti){
+    // Translate hash to number in order to get start number
+    let h_num = parseInt(block.prevBlockHash.substring(0, 5), 16);
+    while(h_num % 210 !== 0){ // make sure divisible of 2, 3, 5, 7, and the avg run time is 105
+      h_num++;
+    }
+    let a = 0;
+  }
+
   /**
    * Looks for a "proof".  It breaks after some time to listen for messages.  (We need
    * to do this since JS does not support concurrency).
@@ -98,6 +107,7 @@ module.exports = class Miner extends Client {
       // After that, create a new block and start searching for a proof.
       // The 'startNewSearch' method might be useful for this last step.
 
+      this.cunninghamChain(this.currentBlock, this.currentBlock.proof + 1);
       if(this.currentBlock.verifyProof()){
         let coinbaseTX = this.currentBlock.coinbaseTX;
         this.wallet.addUTXO(coinbaseTX.outputs[0]);
