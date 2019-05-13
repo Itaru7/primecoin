@@ -129,14 +129,16 @@ module.exports = class Block {
      * proof of work value.
      */
     verifyProof() {
-        let h = utils.hash(this.serialize());
-        let n = new BigInteger(h, 16);
-        //return n.compareTo(this.target) < 0;
+        let diff = 3;
+        // build cunningham chain starts from proof
+        let cunningham_chain = [this.origin];
+        for (let i = 0; i < diff; i++ )
+            cunningham_chain.push(cunningham_chain[i] * 2 + 1);
 
-        let cunningham_chain = [2, 3, 5]; // just for testing
+        // Fermat Primality test
         for(let p of cunningham_chain) {
             for (let i = 0; i < 5; i++) {
-                let a = this.getRandomInt(2, this.proof - 1);
+                let a = this.getRandomInt(2, p - 1);
                 if (this.getGCD(a, p) !== 1) {
                     return false;
                 } else {
@@ -146,6 +148,7 @@ module.exports = class Block {
                 }
             }
         }
+        return true;
     }
 
     getGCD(a,b) { /* getting the greatest common divisor */
