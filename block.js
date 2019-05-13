@@ -131,7 +131,7 @@ module.exports = class Block {
     verifyProof() {
         let diff = 3;
         // build cunningham chain starts from proof
-        let cunningham_chain = [this.proof];
+        let cunningham_chain = [this.origin];
         for (let i = 0; i < diff; i++ )
             cunningham_chain.push(cunningham_chain[i] * 2 + 1);
 
