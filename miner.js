@@ -2,6 +2,7 @@
 
 let Block = require('./block.js');
 let Client = require('./client.js');
+let utils = require('./utils.js');
 
 const NUM_ROUNDS_MINING = 2000;
 
@@ -70,7 +71,10 @@ module.exports = class Miner extends Client {
     this.currentBlock = b;
 
     // Start looking for a proof at 0.
-    this.currentBlock.proof = 0;
+    
+    let hash = this.currentBlock.hashVal();
+    this.currentBlock.origin = parseInt(hash.substring(0, 2), 16);
+    this.currentBlock.proof = this.currentBlock.origin;
   }
 
   sieve(){
@@ -149,7 +153,7 @@ module.exports = class Miner extends Client {
       // After that, create a new block and start searching for a proof.
       // The 'startNewSearch' method might be useful for this last step.
 
-      this.currentBlock.origin = 79;
+      //this.currentBlock.origin = 79;
       // this.sieve();
       this.cunninghamChain(this.currentBlock, this.currentBlock.proof + 1);
       if(this.currentBlock.verifyProof()){
@@ -158,7 +162,7 @@ module.exports = class Miner extends Client {
         this.announceProof();
         this.startNewSearch(true);
       }
-      this.currentBlock.proof++;
+      this.currentBlock.proof = this.currentBlock.proof + this.currentBlock.origin;
     }
     // If we are testing, don't continue the search.
     if (!oneAndDone) {
