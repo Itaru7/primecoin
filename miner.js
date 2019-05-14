@@ -73,13 +73,55 @@ module.exports = class Miner extends Client {
     this.currentBlock.proof = 0;
   }
 
+  sieve(){
+    let size = this.origin * 8;
+    let array = [], upperLimit = Math.sqrt(size), output = [];
+
+    // Make an array from 2 to (n - 1)
+    for (let i = 0; i < size; i++)
+      array.push(true);
+
+
+    // Remove multiples of primes starting from the origin
+    for (let i = this.origin; i <= upperLimit; i++)
+      if (array[i])
+        for (let j = i * i; j < size; j += i)
+          array[j] = false;
+
+    // All array[i] set to true are primes
+    for (let i = this.origin; i < size; i++)
+      if(array[i])
+        output.push(i);
+
+    return output;
+  }
+
   cunninghamChain(block, numMulti){
-    // Translate hash to number in order to get start number
-    let h_num = parseInt(block.prevBlockHash.substring(0, 5), 16);
-    while(h_num % 210 !== 0){ // make sure divisible of 2, 3, 5, 7, and the avg run time is 105
-      h_num++;
+    // // Translate hash to number in order to get start number
+    // let h_num = parseInt(block.prevBlockHash.substring(0, 5), 16);
+    // while(h_num % 210 !== 0){ // make sure divisible of 2, 3, 5, 7, and the avg run time is 105
+    //   h_num++;
+    // }
+    // let a = 0;
+    let requiredLength = 3;
+    let current_length = 0;
+    let valid = false;
+    while(!valid) {
+      while (!block.fermatTest(block.origin)) {
+        block.origin++;
+      }
+      let temp = block.origin;
+      while(current_length < requiredLength && block.fermatTest(temp*2+1)){
+        current_length++;
+        temp = temp * 2 + 1;
+      }
+      if (current_length === requiredLength)
+        valid = true;
+      else {
+        current_length = 0;
+        block.origin++;
+      }
     }
-    let a = 0;
   }
 
   /**
@@ -107,6 +149,8 @@ module.exports = class Miner extends Client {
       // After that, create a new block and start searching for a proof.
       // The 'startNewSearch' method might be useful for this last step.
 
+      this.currentBlock.origin = 79;
+      // this.sieve();
       this.cunninghamChain(this.currentBlock, this.currentBlock.proof + 1);
       if(this.currentBlock.verifyProof()){
         let coinbaseTX = this.currentBlock.coinbaseTX;
