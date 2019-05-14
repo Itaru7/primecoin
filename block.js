@@ -141,17 +141,6 @@ module.exports = class Block {
             valid = this.fermatTest(cunningham_chain[i]);
             i++;
         }
-        // // Fermat Primality test
-        // for(let p of cunningham_chain) {
-        //     for (let i = 0; i < 5; i++) {
-        //         let a = this.getRandomInt(2, p - 1);
-        //         if (this.getGCD(a, p) !== 1)
-        //             return false;
-        //         else
-        //             if (this.getPower(a, p, p) !== 1)
-        //                 return false;
-        //     }
-        // }
         return valid;
     }
 
@@ -160,9 +149,10 @@ module.exports = class Block {
             let a = this.getRandomInt(2, n - 1);
             if (this.getGCD(a, n) !== 1)
                 return false;
-            else
-            if (this.getPower(a, n-1, n) !== 1)
-                return false;
+            else {
+                if (Math.pow(a, (n - 1)) % n !== 1)
+                    return false;
+            }
         }
         return true;
     }
@@ -175,17 +165,6 @@ module.exports = class Block {
             a = tmp;
         }
         return a;
-    }
-
-    getPower(a,b,p) { /* getting the a^b mod p */
-        if (b === 1)
-            return a%p;
-        else {
-            let x = this.getPower(a,Math.floor(b/2),p);
-            if (b%2 === 0)
-                return (x*x)%p;
-            else return (((x*x)%p)*a)%p;
-        }
     }
 
     getRandomInt(min,max) { /* getting a random between given max and min values */
