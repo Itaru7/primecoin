@@ -135,18 +135,34 @@ module.exports = class Block {
         for (let i = 0; i < diff; i++ )
             cunningham_chain.push(cunningham_chain[i] * 2 + 1);
 
-        // Fermat Primality test
-        for(let p of cunningham_chain) {
-            for (let i = 0; i < 5; i++) {
-                let a = this.getRandomInt(2, p - 1);
-                if (this.getGCD(a, p) !== 1) {
-                    return false;
-                } else {
-                    if (this.getPower(a, p, p) !== 1) {
-                        return false;
-                    }
-                }
-            }
+        let valid = true;
+        let i = 0;
+        while(!valid && i < cunningham_chain.length){
+            valid = this.fermatTest(cunningham_chain[i]);
+            i++;
+        }
+        // // Fermat Primality test
+        // for(let p of cunningham_chain) {
+        //     for (let i = 0; i < 5; i++) {
+        //         let a = this.getRandomInt(2, p - 1);
+        //         if (this.getGCD(a, p) !== 1)
+        //             return false;
+        //         else
+        //             if (this.getPower(a, p, p) !== 1)
+        //                 return false;
+        //     }
+        // }
+        return valid;
+    }
+
+    fermatTest(n){
+        for (let i = 0; i < 5; i++) {
+            let a = this.getRandomInt(2, n - 1);
+            if (this.getGCD(a, n) !== 1)
+                return false;
+            else
+            if (this.getPower(a, n-1, n) !== 1)
+                return false;
         }
         return true;
     }
