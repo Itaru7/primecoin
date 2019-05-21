@@ -74,6 +74,7 @@ module.exports = class Miner extends Client {
     
     let hash = this.currentBlock.hashVal();
     this.currentBlock.origin = parseInt(hash.substring(0, 2), 16);
+    this.currentBlock.origin = 89;
     this.currentBlock.proof = this.currentBlock.origin;
   }
 
@@ -107,7 +108,7 @@ module.exports = class Miner extends Client {
     //   h_num++;
     // }
     // let a = 0;
-    let requiredLength = 3;
+    let requiredLength = 2;
     let current_length = 0;
     let valid = false;
     while(!valid) {
@@ -140,7 +141,8 @@ module.exports = class Miner extends Client {
    */
   findProof(oneAndDone=false) {
     let pausePoint = this.currentBlock.proof + NUM_ROUNDS_MINING;
-    while (this.currentBlock.proof < pausePoint) {
+    let found = false;
+    while (!found && this.currentBlock.proof < pausePoint) {
 
       //
       // **YOUR CODE HERE**
@@ -161,6 +163,7 @@ module.exports = class Miner extends Client {
         this.wallet.addUTXO(coinbaseTX.outputs[0]);
         this.announceProof();
         this.startNewSearch(true);
+        found = true;
       }
       this.currentBlock.proof = this.currentBlock.proof + this.currentBlock.origin;
     }

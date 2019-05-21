@@ -129,7 +129,7 @@ module.exports = class Block {
      * proof of work value.
      */
     verifyProof() {
-        let diff = 3;
+        let diff = 2;
         // build cunningham chain starts from proof
         let cunningham_chain = [this.origin];
         for (let i = 0; i < diff; i++ )
@@ -150,7 +150,7 @@ module.exports = class Block {
             if (this.getGCD(a, n) !== 1)
                 return false;
             else {
-                if (Math.pow(a, (n - 1)) % n !== 1)
+                if (this.getPower(a,n-1,n) !== 1)
                     return false;
             }
         }
@@ -165,6 +165,17 @@ module.exports = class Block {
             a = tmp;
         }
         return a;
+    }
+
+    getPower(a,b,p) { /* getting the a^b mod p */
+        if (b === 1)
+            return a%p;
+        else {
+            let x = this.getPower(a,Math.floor(b/2),p);
+            if (b%2 === 0)
+                return (x*x)%p;
+            else return (((x*x)%p)*a)%p;
+        }
     }
 
     getRandomInt(min,max) { /* getting a random between given max and min values */
