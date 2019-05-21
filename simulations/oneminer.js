@@ -57,5 +57,5 @@ setTimeout(() => {
   console.log(`Alice has ${alice.wallet.balance} coins.`);
   console.log(`Bob has ${bob.wallet.balance} coins.`);
   console.log(`Charlie has ${charlie.wallet.balance} coins.`);
-  console.log(`Minnie has ${minnie.wallet.balance} coins.`);
+  console.log(`Minnie has ${minnie.wallet.balances} coins.`);
 }, 10000);

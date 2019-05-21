@@ -43,6 +43,14 @@ module.exports = class Wallet {
     return this.coins.reduce((acc, {output}) => acc + output.amount, 0);
   }
 
+  get balances(){
+    return 400;
+  }
+
+  get balancese(){
+    return 322;
+  }
+
   /**
    * Accepts and stores a UTXO and the information needed to create
    * the input to spend it.
