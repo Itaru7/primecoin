@@ -19,7 +19,7 @@
   "dependencies": {
     "chai": "^4.2.0",
     "jsbn": "^1.1.0",
-    "keypair": "^1.0.1",
+    "keypair": "^1.0.4",
     "mocha": "^6.0.2"
   }
 }
